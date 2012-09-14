@@ -21,10 +21,10 @@ module SimpleCalendar
 
     def build_range(selected_month)
       start_date = selected_month.beginning_of_month
-      start_date = start_date.sunday? ? start_date : start_date.beginning_of_week(:sunday)
+      start_date = start_date.monday? ? start_date : start_date.beginning_of_week(:monday)
 
       end_date   = selected_month.end_of_month
-      end_date   = end_date.saturday? ? end_date : end_date.end_of_week(:sunday)
+      end_date   = end_date.sunday? ? end_date : end_date.end_of_week(:monday)
 
       date_range = (start_date..end_date).to_a
     end
@@ -32,12 +32,12 @@ module SimpleCalendar
     def build_month(date_range)
       month = []
       week  = []
-      i     = 0
+      i     = 1
 
       date_range.each do |date|
         week << date
-        if i == 6
-          i = 0
+        if i == 7
+          i = 1
           month << week
           week = []
         else
@@ -54,7 +54,7 @@ module SimpleCalendar
       today = Date.today
       content_tag(:table, :class => "table table-bordered table-striped calendar") do
         tags << month_header(selected_month, options)
-        tags << content_tag(:thead, content_tag(:tr, I18n.t("date.abbr_day_names").collect { |name| content_tag :th, name, :class => (selected_month.month == Date.today.month && Date.today.strftime("%a") == name ? "current-day" : nil)}.join.html_safe))
+        tags << content_tag(:thead, content_tag(:tr, I18n.t("date.abbr_day_names").rotate(1).collect { |name| content_tag :th, name, :class => (selected_month.month == Date.today.month && Date.today.strftime("%a") == name ? "current-day" : nil)}.join.html_safe))
         tags << content_tag(:tbody, :'data-month'=>selected_month.month, :'data-year'=>selected_month.year) do
 
           month.collect do |week|
@@ -102,9 +102,10 @@ module SimpleCalendar
 
         tags << month_link(options[:prev_text], previous_month, {:class => "previous-month"})
         tags << I18n.t("date.month_names")[selected_month.month]
+        tags << selected_month.year
         tags << month_link(options[:next_text], next_month, {:class => "next-month"})
 
-        tags.join.html_safe
+        tags.join(' ').html_safe
       end
     end
 

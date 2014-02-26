@@ -8,6 +8,10 @@ module SimpleCalendar
         def start_time_column
           #{config[:start_time]}
         end
+
+        def has_calendar?
+          true
+        end
       EOV
     end
   end

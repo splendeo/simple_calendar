@@ -9,7 +9,7 @@ module SimpleCalendar
           #{config[:start_time]}
         end
 
-        def has_calendar?
+        def self.has_calendar?
           true
         end
       EOV
